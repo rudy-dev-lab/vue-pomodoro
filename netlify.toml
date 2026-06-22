@@ -1,0 +1,24 @@
+# netlify.toml
+# Adapt the `publish` dir to your framework:
+#
+#   React  (Vite)     →  dist
+#   Vue    (Vite)     →  dist
+#   Astro             →  dist
+#   Angular 17+       →  dist/{project-name}/browser
+#   Angular (legacy)  →  dist/{project-name}
+#
+# If you're unsure, run `npm run build` and check what folder gets created.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# SPA routing fallback (React/Vue/Angular)
+# Remove this section for Astro (static site with its own routing)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
