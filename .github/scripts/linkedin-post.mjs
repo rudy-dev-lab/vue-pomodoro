@@ -18,9 +18,8 @@ const {
 } = process.env;
 
 const REQUIRED = [
-  'DEPLOY_URL', 'GITHUB_REPO_URL', 'GITHUB_REPO_NAME',
-  'ANTHROPIC_API_KEY', 'LINKEDIN_CLIENT_ID', 'LINKEDIN_CLIENT_SECRET',
-  'LINKEDIN_REFRESH_TOKEN', 'LINKEDIN_PERSON_URN',
+'LINKEDIN_ACCESS_TOKEN',
+'LINKEDIN_PERSON_URN',
 ];
 
 const missing = REQUIRED.filter((k) => !process.env[k]);
@@ -33,23 +32,10 @@ if (missing.length) {
 // Always refresh — no need to store the short-lived access token as a secret.
 
 async function getAccessToken() {
-  const res = await fetch('https://www.linkedin.com/oauth/v2/accessToken', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      grant_type: 'refresh_token',
-      refresh_token: LINKEDIN_REFRESH_TOKEN,
-      client_id: LINKEDIN_CLIENT_ID,
-      client_secret: LINKEDIN_CLIENT_SECRET,
-    }).toString(),
-  });
-
-  const data = await res.json();
-  if (!res.ok || !data.access_token) {
-    throw new Error(`Token refresh failed: ${JSON.stringify(data)}`);
-  }
-  console.log('🔑 LinkedIn access token refreshed');
-  return data.access_token;
+  const token = process.env.LINKEDIN_ACCESS_TOKEN;
+  if (!token) throw new Error('Missing LINKEDIN_ACCESS_TOKEN');
+  console.log('🔑 Using LinkedIn access token');
+  return token;
 }
 
 // ─── README reader ────────────────────────────────────────────────────────────
